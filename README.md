@@ -1,5 +1,4 @@
 # Social network
-
 Pet project has been created by 3 developers: Artyom Golubov, Dmitry Zaderjaka and Vladimir Kolesnik.
 
 Application for users, who like chat in social networks.
