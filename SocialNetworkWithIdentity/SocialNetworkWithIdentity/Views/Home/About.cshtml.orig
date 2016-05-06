@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+
+<h2>Проект "Social network".</h2>
+<p>Выполнен студентами компьютерной академии "ШАГ".</p>
+<p>
+    Используемые технологии и инструменты:
+    <ul>
+        <li>ASP.NET MVC;</li>
+        <li>ORM - Entity Framework;</li>
+        <li>LINQ;</li>
+        <li>VCS - Mercurial;</li>
+        <li>Visual studio;</li>
+        <li>Trello.</li>
+    </ul>
+</p>

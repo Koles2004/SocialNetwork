@@ -1,0 +1,544 @@
+<<<<<<< local
+<<<<<<< local
+﻿@model SocialNetworkWithIdentity.Models.ViewModels.UserPageViewModel
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "UserPage";
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/scripts")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+<style>
+    a:hover[class = "forImage"] {
+        text-decoration: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col-xs-5 col-sm-6 col-md-5 col-lg-4">
+        <div>
+            <img style="width: 250px" src='@Url.Content("~/Content/Images/AccountImages/" + Model.Avatar)' alt="Avatar" />
+        </div>
+
+        <div>
+            @Html.ActionLink("Изменить фотографию", "ChangePhoto", "Account", new { Id = Model.Id }, null)
+            <br />
+            <br />
+            @Html.ActionLink("Редактировать страницу", "EditUser", "Account", new { Id = Model.Id }, null)
+        </div>
+
+        <br />
+        <br />
+
+        <div style="height: 200px; width: 200px; margin-bottom: 45px">
+            <h3 style="margin: 0; background-color: lightblue; width: 180px">Друзья</h3>
+
+            <br />
+
+            @foreach (var f in ViewBag.Friends) // получение друзей юзера
+            {
+                <div style="float: left">
+                    <a class="forImage" href="/Account/UserPageOfFriend/@f.Id">
+                        <img src='@Url.Content("~/Content/Images/AccountImages/" + f.Avatar)' alt="Avatar" width="50" height="50" />
+                        <div style="display: inline-block; width: 7px"></div>
+                    </a>
+
+                    <br />
+
+                    <a href="/Account/UserPageOfFriend/@f.Id">
+                        <p style="font-size: 10px">@f.Name</p>
+                        <p style="font-size: 10px">@f.Surname</p>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <div style="height: 200px; width: 200px">
+            <h3 style="margin: 0; background-color: lightblue; width: 180px">Друзья онлайн</h3>
+
+            <br/>
+
+            @foreach (var f in ViewBag.FriendsOnline) // получение друзей юзера онлайн
+            {
+                <div style="float: left">
+                    <a class="forImage" href="/Account/UserPageOfFriend/@f.Id">
+                        <img src='@Url.Content("~/Content/Images/AccountImages/" + f.Avatar)' alt="Avatar" width="50" height="50"/>
+                        <div style="display: inline-block; width: 7px"></div>
+                    </a>
+
+                    <br/>
+
+                    <a href="/Account/UserPageOfFriend/@f.Id">
+                        <p style="font-size: 10px">@f.Name</p>
+                        <p style="font-size: 10px">@f.Surname</p>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-xs-7 col-xs-offset-1 col-sm-6 col-sm-offset-0 col-md-7 col-md-offset-0 col-lg-8 col-lg-offset-0">
+        <div>
+            <div style="display: inline-block">
+                <p>@Html.DisplayFor(modelItem => Model.Name)&nbsp;@Html.DisplayFor(modelItem => Model.Surname)</p>
+            </div>
+
+            <div style="color: mediumseagreen; display: inline-block">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Онлайн
+            </div>
+
+            <div>
+                <a id="StatusLink" style="color: lightslategray;">
+                    @if (!string.IsNullOrEmpty(@Model.Status))
+                    {
+                        @Model.Status
+                    }
+                    else
+                    {
+                        <span>Изменить статус</span>
+                    }
+                </a>
+            </div>
+
+            <script>
+                function ToggleEditStatus() {
+                    $('#StatusLink').click(function () { $('#StatusInput').slideToggle("fast"); });
+                };
+
+                function HideEditStatus() {
+                    $('#StatusInput').slideToggle("fast");;
+                };
+
+                $(document).ready(function () {
+                    ToggleEditStatus();
+                });
+            </script>
+
+            <div id="StatusInput" style="display: none">
+                @using (Ajax.BeginForm("EditStatus", new { status = Model.Status }, new AjaxOptions { UpdateTargetId = "StatusLink", OnSuccess = "HideEditStatus" }))
+                {
+                    @Html.TextBoxFor(m => m.Status)
+                    <input type="submit" value="Сохранить" />
+                }
+            </div>
+        </div>
+
+        <hr style="width: 550px" />
+
+        <div>
+            <table class="table-condensed">
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.DateOfBirth)</td>
+                    <td>@Model.DateOfBirth.ToString("D")</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.City)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.City)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table>
+                <tr>
+                    <td><h4 style="float: left">Контактная информация</h4></td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table class="table-condensed">
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.Email)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.PhoneNumber)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.PhoneNumber)</td>
+                </tr>
+            </table>
+        </div>
+
+        <hr style="width: 545px" />
+
+        <a id="WallLink" style="color: lightslategray;">
+            <span>Написать на стене</span>
+        </a>
+
+        <script>
+            function ToggleRecordOnTheWall() {
+                $('#WallLink').click(function () { $('#WallInput').slideToggle("fast"); });
+            };
+
+            function HideRecordOnTheWall() {
+                $('#WallInput').slideToggle("fast");;
+            };
+
+            $(document).ready(function () {
+                ToggleRecordOnTheWall();
+                var href = "/Event/RecordsOnTheWall?UserId=@Model.Id";
+                $.post(href, function (data, status) {
+                    if (status == "success")
+                        document.getElementById("wall").innerHTML = data;
+                    if (status == "error")
+                        alert("Error: " + status);
+                });
+            });
+        </script>
+
+        <div id="WallInput" style="display: none">
+            @using (Ajax.BeginForm("RecordOnTheWall", "Event", new { senderUserId = Model.Id, recieverUserId = Model.Id }, new AjaxOptions { UpdateTargetId = "wall", OnSuccess = "HideRecordOnTheWall" }))
+            {
+                @Html.TextArea("TextOnTheWall", "", 4, 40, null)
+                <div>
+                    <input type="submit" value="Отправить" class="navbar-left" />
+                </div>
+            }
+        </div>
+        <div id="wall">
+        </div>
+    </div>
+</div>=======
+﻿@model SocialNetworkWithIdentity.Models.ViewModels.UserPageViewModel
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "UserPage";
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/scripts")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+<style>
+    a:hover[class = "forImage"] {
+        text-decoration: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-5">
+        <div>
+            <img style="width: 250px" src='@Url.Content("~/Content/Images/AccountImages/" + Model.Avatar)' alt="Avatar" />
+        </div>
+
+        <div>
+            @Html.ActionLink("Изменить фотографию", "ChangePhoto", "Account", new { Id = Model.Id }, null)
+            <br />
+            <br />
+            @Html.ActionLink("Редактировать страницу", "EditUser", "Account", new { Id = Model.Id }, null)
+        </div>
+
+        <br />
+        <br />
+
+        <div style="height: 200px; width: 200px; margin-bottom: 45px">
+            <h3 style="margin: 0; background-color: lightblue; width: 180px">Друзья</h3>
+
+            <br/>
+
+            @foreach (var f in ViewBag.Friends) // получение друзей юзера
+            {
+                <div style="float: left">
+                    <a class="forImage" href="/Account/UserPageOfFriend/@f.Id">
+                        <img src='@Url.Content("~/Content/Images/AccountImages/" + f.Avatar)' alt="Avatar" width="50" height="50"/>
+                        <div style="display: inline-block; width: 7px"></div>
+                    </a>
+
+                    <br/>
+
+                    <a href="/Account/UserPageOfFriend/@f.Id">
+                        <p style="font-size: 10px">@f.Name</p>
+                        <p style="font-size: 10px">@f.Surname</p>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <div style="height: 200px; width: 200px">
+            <h3 style="margin: 0; background-color: lightblue; width: 180px">Друзья онлайн</h3>
+
+            <br />
+
+            @foreach (var f in ViewBag.FriendsOnline) // получение друзей юзера онлайн
+            {
+                <div style="float: left">
+                    <a class="forImage" href="/Account/UserPageOfFriend/@f.Id">
+                        <img src='@Url.Content("~/Content/Images/AccountImages/" + f.Avatar)' alt="Avatar" width="50" height="50" />
+                        <div style="display: inline-block; width: 7px"></div>
+                    </a>
+
+                    <br />
+
+                    <a href="/Account/UserPageOfFriend/@f.Id">
+                        <p style="font-size: 10px">@f.Name</p>
+                        <p style="font-size: 10px">@f.Surname</p>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-6 col-md-offset-0">
+        <div>
+            <div style="display: inline-block">
+                <p>@Html.DisplayFor(modelItem => Model.Name)&nbsp;@Html.DisplayFor(modelItem => Model.Surname)</p>
+            </div>
+
+            <div style="color: mediumseagreen; display: inline-block">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Онлайн
+            </div>
+
+            <div>
+                <a id="StatusLink" style="color: lightslategray;">
+                    @if (!string.IsNullOrEmpty(@Model.Status))
+                    {
+                        @Model.Status
+                    }
+                    else
+                    {
+                        <span>Изменить статус</span>
+                    }
+                  </a>
+            </div>
+
+            <script>
+                function ToggleEditStatus() {
+                    $('#StatusLink').click(function() { $('#StatusInput').slideToggle("fast"); });
+                };
+
+                function HideEditStatus() {
+                    $('#StatusInput').slideToggle("fast");;
+                };
+
+                $(document).ready(function() {
+                    ToggleEditStatus();
+                });
+            </script>
+
+            <div id="StatusInput" style="display: none">
+                @using (Ajax.BeginForm("EditStatus", new { status = Model.Status }, new AjaxOptions { UpdateTargetId = "StatusLink", OnSuccess = "HideEditStatus" }))
+                {
+                    @Html.TextBoxFor(m => m.Status)
+                    <input type="submit" value="Сохранить" />
+                }
+            </div>
+        </div>
+
+        <hr style="width: 550px" />
+
+        <div>
+            <table class="table-condensed">
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.DateOfBirth)</td>
+                    <td>@Model.DateOfBirth.ToString("D")</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.City)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.City)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table>
+                <tr>
+                    <td><h4 style="float: left">Контактная информация</h4></td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table class="table-condensed">
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.Email)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.PhoneNumber)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.PhoneNumber)</td>
+                </tr>
+            </table>
+        </div>
+
+        <hr style="width: 545px" />
+
+        <a id="WallLink" style="color: lightslategray;">
+            <span>Написать на стене</span>
+        </a>
+
+        <script>
+    function ToggleRecordOnTheWall() {
+        $('#WallLink').click(function () { $('#WallInput').slideToggle("fast"); });
+    };
+
+    function HideRecordOnTheWall() {
+        $('#WallInput').slideToggle("fast");;
+    };
+
+    $(document).ready(function () {
+        ToggleRecordOnTheWall();
+        var href = "/Event/RecordsOnTheWall?UserId=@Model.Id";
+        $.post(href, function (data, status) {
+            if (status == "success")
+                document.getElementById("wall").innerHTML = data;
+            if (status == "error")
+                alert("Error: " + status);
+        });
+    });
+        </script>
+
+        <div id="WallInput" style="display: none">
+            @using (Ajax.BeginForm("RecordOnTheWall", "Event", new { senderUserId = Model.Id, recieverUserId = Model.Id }, new AjaxOptions { UpdateTargetId = "wall", OnSuccess = "HideRecordOnTheWall" }))
+            {
+                @Html.TextArea("TextOnTheWall", "", 4, 40, null)
+                <div>
+                    <input type="submit" value="Сохранить" class="navbar-left" />
+                </div>
+            }
+        </div>
+        <div id="wall">
+        </div>
+    </div>
+</div>>>>>>>> other
+=======
+﻿@model SocialNetworkWithIdentity.Models.ViewModels.UserPageViewModel
+
+@{
+    ViewBag.Title = "UserPage";
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/scripts")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+<style>
+    a:hover[class = "forImage"] {
+        text-decoration: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <img src='@Url.Content("~/Content/Images/AccountImages/" + Model.Avatar)' alt="Avatar" width="250" height="250" />
+        </div>
+
+        <div>
+            @Html.ActionLink("Изменить фотографию", "ChangePhoto", "Account", new { Id = Model.Id }, null)
+            <br />
+            <br />
+            @Html.ActionLink("Редактировать страницу", "EditUser", "Account", new { Id = Model.Id }, null)
+        </div>
+
+        <br />
+        <br />
+
+        <div style="height: 200px; width: 200px">
+            <h4 style="margin: 0; background-color: lightblue; width: 180px">Друзья</h4>
+
+            <br />
+
+            @foreach (var f in ViewBag.Friends) // получение друзей юзера
+            {
+                <div style="float: left">
+                    <a class="forImage" href="/Account/UserPageOfFriend/@f.Id">
+                        <img src='@Url.Content("~/Content/Images/AccountImages/" + f.Avatar)' alt="Avatar" width="50" height="50" />
+                        <div style="display: inline-block; width: 7px"></div>
+                    </a>
+
+                    <br />
+
+                    <a href="/Account/UserPageOfFriend/@f.Id">
+                        <p style="font-size: 10px">@f.Name</p>
+                        <p style="font-size: 10px">@f.Surname</p>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div>
+            <div style="display: inline-block">
+                <p>@Html.DisplayFor(modelItem => Model.Name)&nbsp;@Html.DisplayFor(modelItem => Model.Surname)</p>
+            </div>
+            <!--Выводить онлайн или не в сети, можно проверку делать в контроллере и выводить через ViewBag-->
+            <div style="color: mediumseagreen; display: inline-block">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Онлайн
+            </div>
+
+            <div>
+                <a id="StatusLink" style="color: lightslategray;">
+                    @if (!string.IsNullOrEmpty(@Model.Status))
+                    {
+                        @Model.Status
+                    }
+                    else
+                    {
+                        <span>Изменить статус</span>
+                    }
+                  </a>
+            </div>
+
+            <script>
+                function ToggleEditStatus() {
+                    $('#StatusLink').click(function() { $('#StatusInput').toggle() });
+                };
+
+                function HideEditStatus() {
+                    $('#StatusInput').toggle();
+                };
+
+                $(document).ready(function() {
+                    ToggleEditStatus();
+                });
+            </script>
+
+            <div id="StatusInput" style="display: none">
+                @using (Ajax.BeginForm("EditStatus", new { status = Model.Status }, new AjaxOptions { UpdateTargetId = "StatusLink", OnSuccess = "HideEditStatus" }))
+                {
+                    @Html.TextBoxFor(m => m.Status)
+                    <input type="submit" value="Сохранить" />
+                }
+            </div>
+        </div>
+
+        <hr style="width: 550px" />
+
+        <div>
+            <table class="table-condensed">
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.DateOfBirth)</td>
+                    <td>@Model.DateOfBirth.ToString("D")</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.City)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.City)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table>
+                <tr>
+                    <td><h4 style="float: left">Контактная информация</h4></td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table class="table-condensed">
+                <tr>
+                    <td>@Html.DisplayNameFor(modelItem => Model.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.Email)</td>
+                </tr>
+            </table>
+        </div>
+
+        <hr style="width: 545px" />
+    </div>
+</div>>>>>>>> other

@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Social Network</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/scripts")
+
+    <!--Иконка брэнда в адресной страке -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    @*<a href="@Url.Action("Index")">
+        <img src="/favicon.ico" alt="" />
+    </a>*@
+    <style>
+        .menu {
+            position: fixed;
+        }
+
+        .text {
+            height: 1000px;
+        }
+    </style>
+</head>
+<body>
+    <!--Верхняя панель меню-->
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: DarkSlateGray ">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!--Иконка брэнда на странице -->
+                <a href="@Url.Action("Index")">
+                <img class="img-responsive" alt="Brand" src="/favicon.ico" width="64" height="64" align="left"/>
+                </a>
+                @Html.ActionLink("Social Network", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Поиск...">
+                    </div>
+                    <button type="submit" class="btn btn-default glyphicon glyphicon-search"></button>
+                </form>
+                <ul class="nav navbar-nav">
+                    <!--Ссылка на страницу пользователя с текстом "имя пользователя"-->
+                    @*<li class="visible-xs"><a href="../Account/UserPage">Моя страница</a></li>*@
+                    <li class="visible-xs">@Html.ActionLink("Моя страница", "UserPage", "Account")</li>
+                    <li class="visible-xs"><a href="../Home/About">Друзья <span class="badge">0</span></a></li>
+                    <li class="visible-xs">@Html.ActionLink("Сообщения", "Message", "ShowAllMessage")</li>
+                    <li class="visible-xs"><a href="../Home/About">Фотографии</a></li>
+                    <li class="visible-xs"><a href="../Home/About">Новости <span class="badge">0</span></a></li>
+                    @*<li class="hidden-xs">@Html.ActionLink(" UserName", "Index", "Home", new { @class = "glyphicon glyphicon-user" })</li>*@
+                    <li>@Html.ActionLink("Пользователи", "ShowUsers", "Home")</li>
+                    <li>@Html.ActionLink("О программе", "About", "Home")</li>
+                    <li>@Html.Partial("_LoginPartial")</li>
+                    <li class="hidden-lg">@Html.ActionLink("Выйти", "Contact", "Home")</li>
+                    @*<li class="col-md-push-4 visible-lg">@Html.ActionLink("Выйти", "Contact", "Home")</li>*@
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <br />
+        <div class="container-fluid">
+            <!--Боковая панель меню-->
+            <div class="row-fluid">
+                <div class="col-md-2 hidden-xs">
+                    <ul class=" nav nav-list menu">
+                        @*<li><a href="../Account/UserPage">Моя страница</a></li>*@
+                        <li>@Html.ActionLink("Моя страница", "UserPage", "Account")</li>
+                        <li>@Html.ActionLink("Друзья", "OfferfriendshipList", "People")<span class="badge">@if(ViewBag.GetCountOffersFriendships > 0){@ViewBag.GetCountOffersFriendships}</span></li>
+                        <li><a href="../Home/About">Сообщения <span class="badge">0</span></a></li>
+                        <li><a href="../Home/About">Фотографии</a></li>
+                        <li><a href="../Home/About">Новости <span class="badge">0</span></a></li>
+                    </ul>
+                </div>
+                <!--Контент-->
+                <div class="col-md-10">
+                    <div class="container body-content">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="container body-content">
+        <hr />
+        <footer class="text-center">
+            <p>&copy; @DateTime.Now.Year - RightTrueTeam</p>
+        </footer>
+    </div>-->
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<SocialNetworkWithIdentity.Models.DomainModels.Message>
+@using Microsoft.AspNet.Identity;
+
+<link href="~/Content/ParshalMessage.css" rel="stylesheet" />
+
+<div id="all_dialogs" class="container" style="width: 120%">
+    @foreach (var item in Model)
+    {
+        //красим диалог с новыми для нас сообщениями
+        if (item.Status == false)
+        {
+            <style>
+                #dialog-@item.Id {
+                    background: aquamarine;
+                }
+            </style>
+        }
+        // красим диалог с новыми от НАС(непрочитанными) сообщениями
+        if (item.Status == false && item.Sender.Id == User.Identity.GetUserId())
+        {
+            <style>
+                #dialog-@item.Id {
+                    background: darkgray;
+                }
+            </style>
+        }
+        <a href="~/Message/ShowAllMessagesOfRoom?roomId=@item.Room.Id">
+            <div id="dialog-@item.Id" class="massage row">
+                <div class="col-sm-1">
+                    @{var anotherUser = item.Room.Users.FirstOrDefault(u => u.Id != User.Identity.GetUserId());}
+                    <span class="pull-left">
+                        <img src='@Url.Content("~/Content/Images/AccountImages/" + anotherUser.Avatar)' alt="Avatar" width="60" height="60" />
+                    </span>
+                </div>
+                <div class="massage_info col-sm-2 text-center">
+                    @anotherUser.Name&nbsp;@anotherUser.Surname<br/>
+                    @item.Date.ToLongDateString()
+                </div>
+                <div class="massage_text col-sm-9">
+                    <img src='@Url.Content("~/Content/Images/AccountImages/" + item.Sender.Avatar)' alt="Avatar" width="30" height="30"/>
+                    <span>@item.Text</span>
+                </div>
+            </div>
+        </a>
+
+        <br/>
+    }
+</div>

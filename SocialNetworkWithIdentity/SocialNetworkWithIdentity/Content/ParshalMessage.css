@@ -1,0 +1,42 @@
+﻿/*Для всплывающего модального окна сообщений*/
+.modal-header, h4, .close {
+    background-color: #2569B6;
+    color: white !important;
+    text-align: center;
+    font-size: 30px;
+}
+
+.modal-body{
+    background-color: #54B5ED;
+}
+
+.modal-footer {
+    background-color: #2569B6;
+}
+
+.all_dialogs:hover{
+    background: #7EB9ED;
+}
+
+.vcenter {
+  display: inline-block;
+  float: none;
+  vertical-align: middle;
+}
+
+.massage:hover{    
+    background: #e3ffc8;
+}
+
+.massage{
+    height: 60px;
+}
+
+.massage_info{
+    font-size: smaller;
+    padding: 10px;
+}
+
+.massage_text{
+    padding: 15px;
+}

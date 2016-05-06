@@ -1,0 +1,60 @@
+﻿@model IEnumerable<SocialNetworkWithIdentity.Models.DomainModels.Message>
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "ShowAllMessagesOfRoom";
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/scripts")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+<style>
+    .prokrutka {
+        height: 80%;
+        max-height: 350px;
+        background: #fff;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+</style>
+<script>
+    function sendMessage(e) {
+        if (event.keyCode === 13) {
+            event.preventDefault()
+            $('#skrol').scrollTop(999999);
+            $('#btnAccept').click()            
+        }
+    }
+       
+    function skrolDown(e) {
+        $('#skrol').scrollTop(999999);
+        document.getElementById('massageText').value = "";
+    }
+
+    $(document).ready(function () {
+        $('#skrol').scrollTop(9999999);
+    })
+</script>
+
+<div class="container-fluid form-group">
+    
+@*@using (Html.BeginForm("SendDialogMessage", "Message", FormMethod.Post))*@
+<div id="Shut">
+    @Html.Partial("EmptyView", Model)
+</div>
+@using (Ajax.BeginForm("SendDialogMessage", "Message", null, new AjaxOptions { UpdateTargetId = "Shut", OnSuccess = "skrolDown" }))
+{
+    <div class="text-right" style="margin: 30px 0px 0px 0px; ">
+            <input id="resiver" name="resiver" type="hidden" value="@Model.FirstOrDefault().Room.Users.FirstOrDefault(u => u.Id != User.Identity.GetUserId()).Id">
+            <textarea id="massageText"
+                      name="messageText"
+                      class="form-control"
+                      rows="4"
+                      autofocus="autofocus"
+                      style="max-width: none; resize:none;"
+                      onkeydown="sendMessage()"></textarea>
+        <button type="submit" id="btnAccept" class="btn btn-default">Отправить</button>
+    </div>
+}
+</div>

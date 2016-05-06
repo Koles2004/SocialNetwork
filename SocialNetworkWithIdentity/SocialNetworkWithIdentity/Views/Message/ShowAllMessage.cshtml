@@ -1,0 +1,26 @@
+﻿@model IEnumerable<SocialNetworkWithIdentity.Models.DomainModels.Message>
+@using Microsoft.AspNet.Identity;
+
+<link href="~/Content/ParshalMessage.css" rel="stylesheet" />
+
+<div id="all_dialogs" class="container">
+    @foreach (var item in Model)
+    {
+        <div class="massage row">
+            <div class="col-sm-1">
+                @{var anotherUser = item.Room.Users.FirstOrDefault(u => u.Id != User.Identity.GetUserId());}
+                <span class="pull-left">
+                    <img src='@Url.Content("~/Content/Images/AccountImages/" + anotherUser.Avatar)' alt="Avatar" width="60" height="60" />
+                </span>
+            </div>
+            <div class="massage_info col-sm-3 text-center">
+                @anotherUser.Name&nbsp;@anotherUser.Surname<br />
+                @item.Date.ToLongDateString()
+            </div>
+            <div class="massage_text col-sm-6">
+                <img src='@Url.Content("~/Content/Images/AccountImages/" + item.Sender.Avatar)' alt="Avatar" width="30" height="30" />
+                @item.Text
+            </div>
+        </div>
+    }
+</div>

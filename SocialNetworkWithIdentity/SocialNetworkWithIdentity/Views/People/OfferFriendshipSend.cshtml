@@ -1,0 +1,69 @@
+﻿@model SocialNetworkWithIdentity.Models.ViewModels.PeopleViewModel
+@{
+    ViewBag.Title = "OfferFriendshipSend";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div>
+        <!-- + Model.Avatar добавить потом-->
+        <img src='@Url.Content("~/Content/Images/AccountImages/" + Model.Avatar)' alt="Avatar" width="250" height="250" />
+    </div>
+
+    <hr />
+    <h2>Запрос в друзья отправлен</h2>
+    @Html.ActionLink("Отмена", "OfferFriendshipCancel", "People", new { receivedUserId = Model.Id }, new { @class = "btn btn-primary" })
+
+    <br />
+    <br />
+
+</div>
+
+<div style="position: absolute; left: 300px; top: 0">
+
+    <hr style="width: 550px" />
+
+    <div>
+        <table class="table-condensed">
+            <tr>
+                @Html.ActionLink(Model.Name + " " + Model.Surname, "AnotherUserPage")
+                <br />
+                <br />
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.DateOfBirth)</td>
+                <td>@Html.DisplayFor(model => model.DateOfBirth)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.City)</td>
+                <td>@Html.DisplayFor(model => model.City)</td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <table>
+            <tr>
+                <td><h4 style="float: left">Контактная информация</h4></td>
+                <td><hr style="width: 360px" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <table class="table-condensed">
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.Email)</td>
+                <td>@Html.DisplayFor(model => model.Email)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.PhoneNumber)</td>
+                <td>@Html.DisplayFor(model => model.PhoneNumber)</td>
+            </tr>
+        </table>
+    </div>
+
+    <hr style="width: 550px" />
+</div>
+
+

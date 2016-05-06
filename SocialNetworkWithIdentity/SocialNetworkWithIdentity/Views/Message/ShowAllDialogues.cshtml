@@ -1,0 +1,65 @@
+﻿@model IEnumerable<SocialNetworkWithIdentity.Models.DomainModels.Message>
+@using Microsoft.AspNet.Identity;
+
+<link href="~/Content/ParshalMessage.css" rel="stylesheet" />
+<style>
+    #dialog:hover {
+        background: #EDF1F2;
+    }
+    .prokrutka {
+        height: 1200px;
+        width: 1200px;
+        background: #fff;
+        border: 1px solid #C1C1C1;
+        overflow-y: scroll;
+    }
+</style>
+    <h2 class="text-center">Диалоги</h2>
+<div id="all_dialogs" class="container" style="width: 120%; border-radius: 5px">
+    @foreach (var item in Model)
+    {
+        var anotherUser = item.Room.Users.FirstOrDefault(u => u.Id != User.Identity.GetUserId());
+        <div id="dialog" class="row" onclick="Get">
+            <a href="~/Account/UserPage/@anotherUser.Id">
+                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1" style="padding: 0px 0px 0px 0px; border-radius: 5px">
+                    <span style="font-size: 16px">
+                        <img src='@Url.Content("~/Content/Images/AccountImages/" + anotherUser.Avatar)' alt="Avatar" width="60" height="60" />
+                    </span>
+                </div>
+            </a>
+            <a href="~/Message/ShowAllMessagesOfRoom?roomId=@item.Room.Id">
+                <div class="col-xs-2 col-sm-3 col-md-2 col-lg-2 text-left" style="font-size: 12px; padding: 0px 0px 5px 0px; margin: 0px 0px 0px 0px; border-radius: 5px;">
+                    <div class="text-center">
+                        @anotherUser.Name&nbsp;@anotherUser.Surname<br />
+                        @if (@item.Date.ToShortDateString() == DateTime.Now.ToShortDateString())
+                        {
+                            var str = "сегодня";
+                            @str;<br />
+                            @item.Date.ToShortTimeString()
+                        }
+                        else
+                        {
+                            @item.Date.ToShortDateString()<br />
+                            @item.Date.ToShortTimeString()
+                        }
+                    </div>
+                </div>
+            </a>
+            <a href="~/Message/ShowAllMessagesOfRoom?roomId=@item.Room.Id">
+                <div class="col-xs-9 col-sm-8 col-md-8 col-lg-8 col-lg-offset-1" style="font-size: 14px; padding: 9px 0px 9px 10px; margin: 6px 0px 6px 0px; border-radius: 5px;
+                     @if (item.StatusForMessage == false)
+                     {
+                         string str = "background: #9FF4C2;"; @str      ; }
+                     @if (item.StatusForMessage == false && item.Sender.Id == User.Identity.GetUserId())
+                     {
+                         string str = "background: #9FE0F4;"; @str      ; } ">
+                    <img src='@Url.Content("~/Content/Images/AccountImages/" + item.Sender.Avatar)' alt="Avatar" width="30" height="30" />
+                    <span style="color: black">@item.Text</span>
+                </div>
+
+            </a>
+
+        </div>
+        <br />
+    }
+</div>

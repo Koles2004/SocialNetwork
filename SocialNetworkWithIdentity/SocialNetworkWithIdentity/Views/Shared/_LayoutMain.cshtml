@@ -1,0 +1,144 @@
+﻿@using Microsoft.AspNet.Identity
+@using SocialNetworkWithIdentity.Services
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/scripts")
+    <!--Иконка брэнда в адресной страке -->
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
+
+    @{
+        PeopleService peopleService = new PeopleService();
+
+        if (User != null)
+        {
+            ViewBag.CountOffersFriendships = peopleService.GetCountOffersFriendships(User.Identity.GetUserId());
+            ViewBag.CountOfNewMessages = peopleService.GetCountOfDialoguesWithNewMessages(User.Identity.GetUserId());
+            peopleService.SetDateOfActivity(User.Identity.GetUserId());
+        }
+    }
+    <style>
+        .headMenu
+        {
+            font-size: 18px;
+            color: white;
+        }
+     </style>
+
+</head>
+<body>
+
+    <div id="ShowWelcome" style="position: absolute; top: 0px; left: 100px; display: none; z-index: 9999;">
+        <img style="width: 1200px; z-index: 9999;" src="~/Content/Images/AccountImages/Welcome.gif" />
+    </div> 
+
+    <!--Верхняя панель меню-->
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #2569B6; ">
+        <div class="container headMenu">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span> <!--белые полоски справа в navbar, на которые можно нажать-->
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!--Иконка брэнда на странице -->
+                <img class="img-responsive" alt="Brand" src="~/favicon.ico" width="64" height="64" align="left" />
+                @Html.ActionLink("Социальная сеть", "About", "Home", null, new { @class = "navbar-brand", @style = "font-size: 25px;" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="visible-xs">
+                        <a href="/Account/UserPage">
+                            Моя&nbsp;страница
+                        </a>
+                    </li>
+                    <li class="visible-xs">
+                        <a href="/People/ShowFriendsOrOffers">
+                            Друзья
+                            @if (ViewBag.CountOffersFriendships > 0)
+                            {
+                                <span class="badge span_friends">@ViewBag.CountOffersFriendships</span>
+                            }
+                        </a>
+                    </li>
+                    <li class="visible-xs">
+                        <!--ставит циферку рядом справа, а не под словом, пришлось поменять хелпер на ссылку-->
+                        <a href="/Message/ShowAllDialogues">
+                            Сообщения
+                            @if (ViewBag.CountOfNewMessages > 0)
+                            {
+                                <span class="badge span_messages">@ViewBag.CountOfNewMessages</span>
+                            }
+                        </a>
+                    </li>
+                    <li class="visible-xs">@Html.ActionLink("Новости", "AllEvents", "Event")</li>
+                    
+
+                    @*<li>@Html.ActionLink("О программе", "About", "Home")</li>*@
+                </ul>
+                @Html.Partial("_LoginPartialLogOff")
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="visible-xs"><hr style="border-color: black; margin-top: -1px;" /></li>
+                    <li>@Html.ActionLink("Пользователи", "ShowUsers", "People", null, new {@class = "headMenu"})</li>
+                    <li>@Html.ActionLink("О программе", "About", "Home", null, new {@class = "headMenu"})</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <br />
+        <div class="container-fluid">
+            <!--Боковая панель меню-->
+            <div class="row-fluid row">
+                <div class="col-lg-2 col-md-2 hidden-xs col-sm-1" style="font-weight:bold">
+                    <ul class=" nav nav-list menu">
+
+                        <li>
+                            <a href="/Account/UserPage">
+                                Моя&nbsp;страница
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/People/ShowFriendsOrOffers">
+                                Друзья
+                                    @if (ViewBag.CountOffersFriendships > 0)
+                                    {
+                                        <span class="badge span_friends">@ViewBag.CountOffersFriendships</span>
+                                    }
+                        </a>
+                    </li>
+                    <li>
+                        <!--ставит циферку рядом справа, а не под словом, пришлось поменять хелпер на ссылку-->
+                        <a href="/Message/ShowAllDialogues">
+                            Сообщения
+                            @if (ViewBag.CountOfNewMessages > 0)
+                            {<span class="badge span_messages">@ViewBag.CountOfNewMessages</span>}
+                    </a>
+                </li>
+                <li>@Html.ActionLink("Новости", "AllEvents", "Event")</li>
+            </ul>
+            </div>
+                <!--Контент-->
+                <div class="col-lg-offset-1  col-lg-9 col-md-9 col-sm-9 col-sm-offset-1">
+                    <div class="body-content">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content navbar-fixed-bottom">
+
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

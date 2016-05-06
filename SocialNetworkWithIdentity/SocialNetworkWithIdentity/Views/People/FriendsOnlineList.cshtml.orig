@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNet.Identity
+@model IEnumerable<SocialNetworkWithIdentity.Models.ViewModels.PeopleViewModel>
+
+@{
+    ViewBag.Title = "ViewUsers";
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/scripts")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+<h2 style="text-align: center">Список друзей онлайн</h2>    
+
+@Html.Partial("UsersList", Model)

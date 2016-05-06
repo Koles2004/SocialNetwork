@@ -1,0 +1,76 @@
+﻿@model SocialNetworkWithIdentity.Models.ViewModels.PeopleViewModel
+
+@{
+    ViewBag.Title = "OfferFriendship";
+}
+
+<div style="position: absolute; left: 0">
+    <div>
+        <img src='@Url.Content("~/Content/Images/AccountImages/" + Model.Avatar)' alt="Avatar" width="250" height="250" />
+    </div>
+</div>
+
+<div style="position: absolute; left: 300px; top: 0">
+    <div>
+        <div>
+            <p>@Html.DisplayFor(modelItem => Model.Name)&nbsp;@Html.DisplayFor(modelItem => Model.Surname)</p>
+            <!--Выводить онлайн или не в сети, можно проверку делать в контроллере и выводить через ViewBag-->
+            <div style="color: red; position: absolute; left: 500px; top: 0">
+            </div>
+            Онлайн
+        </div>
+
+        <hr style="width: 550px"/>
+    </div>
+
+    <div>
+        <table class="table-condensed">
+            <tr>
+                <td>@Html.DisplayNameFor(modelItem => Model.DateOfBirth)</td>
+                <td>@Model.DateOfBirth.ToString("D")</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(modelItem => Model.City)</td>
+                <td>@Html.DisplayFor(modelItem => Model.City)</td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <table>
+            <tr>
+                <td><h4 style="float: left">Контактная информация</h4></td>
+                <td><hr style="position: absolute; width: 340px; top: 125px"/></td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <table class="table-condensed">
+            <tr>
+                <td>@Html.DisplayNameFor(modelItem => Model.Email)</td>
+                <td>@Html.DisplayFor(modelItem => Model.Email)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(modelItem => Model.PhoneNumber)</td>
+                <td>@Html.DisplayFor(modelItem => Model.PhoneNumber)</td>
+            </tr>
+        </table>
+    </div>
+
+    <hr style="width: 545px"/>
+</div>
+
+<div style="position: absolute; top: 270px; left: 55px">
+    
+    @if (ViewBag.Status == false)
+    {
+        @Html.ActionLink("Добавить в друзья", "OfferFriendshipSend", "People", new { receivedUserId = Model.Id }, new { @class = "btn btn-default navbar-inverse", style = "background-color: DarkSlateGray; color: gray" })
+    }
+    else
+    {
+        @Html.ActionLink("Отменить заявку в друзья", "OfferFriendshipCancel", "People", new { receivedUserId = Model.Id }, new { @class = "btn btn-default navbar-inverse", style = "background-color: DarkSlateGray; color: gray" })
+    }
+
+    <h2>@ViewBag.Text</h2>
+</div>

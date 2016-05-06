@@ -1,0 +1,224 @@
+﻿using System;
+using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using SocialNetworkWithIdentity.Models.DomainModels;
+using SocialNetworkWithIdentity.Services;
+
+namespace SocialNetworkWithIdentity.Controllers
+{
+    [Authorize]
+    // контроллер, где будут методы для взаимодействия с другими пользователями
+    public class PeopleController : Controller
+    {
+        // как и другие контроллеры, содержит в себе вот такой сервис
+        private readonly PeopleService peopleService;
+
+        public PeopleController()
+        {
+            peopleService = new PeopleService();
+        }
+
+        // GET: People
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult ShowFriendsOrOffers(string userId)
+        {
+            var getCountOffersFriendships = peopleService.GetCountOffersFriendships(User.Identity.GetUserId());
+
+            if (getCountOffersFriendships > 0)
+                return OfferfriendshipList(userId);
+
+            return FriendshipList(userId);
+        }
+
+        // Вью с приглашениями в друзья
+        public ActionResult OfferfriendshipList(string offererUserId)
+        {
+            var viewUsers = peopleService.GetAllFriendshipOffers(User.Identity.GetUserId());
+
+            foreach (var user in viewUsers)
+            {
+                user.IsFriend = peopleService.CheckIfUserIsMyFriend(User.Identity.GetUserId(), peopleService.GetUser(user.Id).Id);
+                user.IsToMeNewOfferFriendship = peopleService.CheckIfUserToMeNewOfferFriendship(User.Identity.GetUserId(), peopleService.GetUser(user.Id).Id);
+                user.IsMyNewOfferFriendship = peopleService.CheckIfMyUserNewOfferFriendship(User.Identity.GetUserId(), peopleService.GetUser(user.Id).Id);
+            }
+            
+            if (offererUserId == null)
+            {
+                return View("OfferfriendshipList", viewUsers);
+            }
+
+			if (peopleService.CreateNewFriendship(User.Identity.GetUserId(), offererUserId))
+				ViewBag.Result = "Заявка принята.";
+			else 
+				ViewBag.Result = "Что-то пошло не так.";
+
+            viewUsers = peopleService.GetAllFriendshipOffers(User.Identity.GetUserId());
+
+            return View("OfferfriendshipList", viewUsers);
+        }
+
+        public ActionResult FriendshipList(string offererUserId)
+        {
+            var friends = peopleService.GetAllFriends(User.Identity.GetUserId());
+
+            if (offererUserId == null)
+            {
+                return View("FriendshipList", friends);
+            }
+
+            return View("FriendshipList", friends);
+        }
+
+        #region Работа с Дружбой (AJAX)
+        // Отправляем заявку в друзья (AJAX)
+        [HttpPost]
+        public ActionResult SendOfferFriendship(string friendId)
+        {
+            if (peopleService.MakeOfferFriendship(User.Identity.GetUserId(), friendId))
+            {
+                var _event = new Event
+                {
+                    Sender = peopleService.GetUser(User.Identity.GetUserId()),
+                    Text = peopleService.GetUser(User.Identity.GetUserId()).Name +
+                    (peopleService.GetUser(User.Identity.GetUserId()).Gender == true ? " пригласил " : " пригласила ")
+                    + peopleService.GetUser(friendId).Name + " в друзья.",
+                    Date = DateTime.Now,
+                    Image = null,
+                    EventType = EventType.OfferFriendship,
+                    Owners = { peopleService.GetUser(User.Identity.GetUserId()), peopleService.GetUser(friendId) }
+                };
+
+                peopleService.MakeEvent(_event);
+                ViewBag.Result = "Заявка в друзья отправлена.";
+            }
+            else
+                ViewBag.Result = "Что-то пошло не так.";
+
+            return PartialView("FriendshipButtonStatus", friendId);
+        }
+
+        // Удаляем из друзей (AJAX)
+        [HttpPost]
+        public ActionResult DeleteFriendship(string friendId)
+        {
+            if (peopleService.DeleteFriendship(User.Identity.GetUserId(), friendId))
+            {
+                var _event = new Event
+                {
+                    Sender = peopleService.GetUser(User.Identity.GetUserId()),
+                    Text = peopleService.GetUser(User.Identity.GetUserId()).Name +
+                    (peopleService.GetUser(User.Identity.GetUserId()).Gender == true ? " удалил " : " удалила ")
+                    + " пользователя " + peopleService.GetUser(friendId).Name + " из списка своих друзей.",
+
+                    Date = DateTime.Now,
+                    Image = null,
+                    EventType = EventType.CancelOfferfriendship,
+                    Owners = { peopleService.GetUser(User.Identity.GetUserId()), peopleService.GetUser(friendId) }
+                };
+<<<<<<< local
+
+                ViewBag.Result = "Удаление из друзей произведено.";
+=======
+                peopleService.MakeEvent(_event);
+                ViewBag.Result = "Удаление из друзей произведено";
+>>>>>>> other
+            }
+            else
+                ViewBag.Result = "Что-то пошло не так.";
+
+            return PartialView("FriendshipButtonStatus", friendId);
+        }
+
+        // Подтверждаем заявку в друзья (AJAX)
+        [HttpPost]
+        public ActionResult ConfirmOfferFriendship(string friendId)
+        {
+            if (peopleService.CreateNewFriendship(User.Identity.GetUserId(), friendId))
+            {
+                var _event = new Event
+                {
+                    Sender = peopleService.GetUser(User.Identity.GetUserId()),
+                    Text = peopleService.GetUser(User.Identity.GetUserId()).Name +
+                    (peopleService.GetUser(User.Identity.GetUserId()).Gender == true ? " подтвердил " : " подтвердила ")
+                    + "заявку в друзья от пользователя " + peopleService.GetUser(friendId).Name + ".",
+
+                    Date = DateTime.Now,
+                    Image = null,
+                    EventType = EventType.CancelOfferfriendship,
+                    Owners = { peopleService.GetUser(User.Identity.GetUserId()), peopleService.GetUser(friendId) }
+                };
+<<<<<<< local
+
+                ViewBag.Result = "Заявка принята.";
+=======
+                peopleService.MakeEvent(_event);
+                ViewBag.Result = "Заявка принята";
+>>>>>>> other
+            }
+            else
+                ViewBag.Result = "Что-то пошло не так.";
+
+            return PartialView("FriendshipButtonStatus", friendId);
+        }
+
+        // Отклоняем заявку в друзья (AJAX)
+        [HttpPost]
+        public ActionResult DontConfirmOfferFriendship(string friendId)
+        {
+            if (peopleService.CancelOfferFriendship(friendId, User.Identity.GetUserId()))
+            {
+                var _event = new Event
+                {
+                    Sender = peopleService.GetUser(User.Identity.GetUserId()),
+                    Text = peopleService.GetUser(User.Identity.GetUserId()).Name +
+                    (peopleService.GetUser(User.Identity.GetUserId()).Gender == true ? " отклонил " : " отклонила ")
+                    + "заявку в друзья от пользователя " + peopleService.GetUser(friendId).Name + ".",
+
+                    Date = DateTime.Now,
+                    Image = null,
+                    EventType = EventType.CancelOfferfriendship,
+                    Owners = { peopleService.GetUser(User.Identity.GetUserId()), peopleService.GetUser(friendId) }
+                };
+                peopleService.MakeEvent(_event);
+                ViewBag.Result = "Заявка в друзья отклонена.";
+            }
+            else
+                ViewBag.Result = "Что-то пошло не так.";
+
+            //return Redirect(HttpContext.Request.UrlReferrer.ToString());
+            return PartialView("FriendshipButtonStatus", friendId);
+        }
+
+        // Отменяем заявку в друзья (AJAX)
+        [HttpPost]
+        public ActionResult CancelOfferFriendship(string friendId)
+        {
+            if (peopleService.CancelOfferFriendship(User.Identity.GetUserId(), friendId))
+            {
+                var _event = new Event
+                {
+                    Sender = peopleService.GetUser(User.Identity.GetUserId()),
+                    Text = peopleService.GetUser(User.Identity.GetUserId()).Name +
+                    (peopleService.GetUser(User.Identity.GetUserId()).Gender == true ? " отменил " : " отменила ")
+                    + "заявку в друзья к пользователю " + peopleService.GetUser(friendId).Name + ".",
+
+                    Date = DateTime.Now,
+                    Image = null,
+                    EventType = EventType.CancelOfferfriendship,
+                    Owners = { peopleService.GetUser(User.Identity.GetUserId()), peopleService.GetUser(friendId) }
+                };
+                peopleService.MakeEvent(_event);
+                ViewBag.Result = "Заявка в друзья отменена.";
+            }
+            else
+                ViewBag.Result = "Что-то пошло не так.";
+
+            return PartialView("FriendshipButtonStatus", friendId);
+        }
+        #endregion
+    }
+}

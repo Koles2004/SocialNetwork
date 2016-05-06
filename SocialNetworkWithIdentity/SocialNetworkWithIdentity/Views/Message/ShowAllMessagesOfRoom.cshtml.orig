@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SocialNetworkWithIdentity.Models.DomainModels.Message>
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "ShowAllMessagesOfRoom";
+}
+<style>
+    .prokrutka {
+        height: 80%;
+        max-height: 350px;
+        background: #fff;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+</style>
+
+<div class="container-fluid form-group">
+    <div class="prokrutka">
+        @{var currentDate = "";
+        var currentUser = "";}
+        @foreach (var item in Model)
+        {
+            if (currentDate != item.Date.ToShortDateString())
+            {
+                if (currentDate != "")
+                {
+                    <div class="row text-center" style="border-bottom: 1px solid #ccc; color: #808080; margin-bottom: 5px; ">
+                        @item.Date.ToShortDateString()
+                    </div>
+                }
+                else
+                {
+                    <div class="row text-center" style="border-bottom: 1px solid #ccc; color: #808080; margin-bottom: 5px;">
+                        @item.Date.ToShortDateString()
+                    </div>
+                }
+                currentDate = item.Date.ToShortDateString();
+                currentUser = "";
+            }
+            <div class="row">
+                @if (currentUser != item.Sender.Id)
+{
+    <div class="col-sm-2 col-md-1 col-lg-1">
+        <img src='@Url.Content("~/Content/Images/AccountImages/" + item.Sender.Avatar)' alt="Hello" width="50" height="50" /><br />
+    </div>
+    <div class="col-sm-8 col-md-9 col-lg-9">
+        <a href="../Account/UserPage/@item.Sender.Id">
+            @item.Sender.Name
+        </a><br />
+        <div style="white-space: pre-line">
+            @item.Text
+        </div>
+    </div>
+    <div class="col-sm-2 col-md-2 col-lg-2">
+        @item.Date.ToShortTimeString()
+    </div>
+    currentUser = item.Sender.Id;
+}
+                else
+                {
+                    <div class="col-sm-2 col-md-1 col-lg-1">
+                    </div>
+    <div class="col-sm-8 col-md-9 col-lg-9" style="white-space: pre-line">
+        @item.Text
+    </div>
+    <div class="col-sm-2 col-md-2 col-lg-2">
+        @item.Date.ToShortTimeString()
+    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="form-group" style="margin: 30px 0px 0px 0px; ">
+        <textarea class="form-control" rows="5" autofocus="autofocus" style="max-width: none; resize:none;" onkeydown=""></textarea>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+﻿@using Microsoft.AspNet.Identity
+@model IEnumerable<SocialNetworkWithIdentity.Models.ViewModels.PeopleViewModel>
+
+@{
+    ViewBag.Title = "ViewUsers";
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/scripts")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+<h2 style="text-align: center">Заявки в друзья</h2>
+<h3>@ViewBag.Result</h3>
+
+@Html.ActionLink("Список друзей", "FriendshipList", "People", new{ id = @User.Identity.GetUserId() },
+new { @class = "btn btn-primary", style = "position: absolute; left: 700px; top: 20px" })
+
+@Html.Partial("UsersList", Model)
