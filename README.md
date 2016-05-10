@@ -3,7 +3,7 @@ Pet project has been created by 3 developers: Artyom Golubov, Dmitry Zaderjaka a
 
 Application for users, who like chat in social networks.
 
-This application will be hosted soon.
+This application is hosted http://sn.somee.com/
 
 Technologies:
 - ASP.NET MVC;
